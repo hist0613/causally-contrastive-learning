@@ -11,11 +11,11 @@ DATASET_PATH = "dataset/aclImdb"
 #REFORMED_DATASET_PATH = "dataset/reform_aclImdb"
 #OUTPUT_PATH = "output"
 #REFORMED_DATASET_PATH = "dataset/cf_augmented_aclImdb"
-#REFORMED_DATASET_PATH = "dataset/triplet_augmented_aclImdb"
-REFORMED_DATASET_PATH = "dataset/triplet_1word_augmented_2x_aclImdb"
+REFORMED_DATASET_PATH = "dataset/triplet_augmented_aclImdb"
+#REFORMED_DATASET_PATH = "dataset/triplet_1word_augmented_aclImdb"
 
 #REFORMED_DATASET_PATH = "dataset/cf_not_augmented_aclImdb_full"
-OUTPUT_PATH = "checkpoints/triplet_1word_augmented_2x_output_scheduling_warmup"
+OUTPUT_PATH = "checkpoints/triplet_1word_augmented_output_scheduling_warmup"
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
@@ -206,7 +206,7 @@ val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-model = BertForCounterfactualRobustness.from_pretrained('bert-base-uncased')
+model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'epoch_14'))
 model = torch.nn.DataParallel(model)
 model.to(device)
 
@@ -216,77 +216,11 @@ scheduler = get_linear_schedule_with_warmup(optim, num_warmup_steps=50, num_trai
 best_epoch = -1
 best_acc = 0
 steps = 0
-for epoch in range(EPOCH_NUM):
-    model.train()
-    train_progress_bar = tqdm(train_loader)
-
-    for batch in train_progress_bar:
-        optim.zero_grad()
-
-        anc_input_ids = batch['anchor_input_ids'].to(device)
-        anc_attention_mask = batch['anchor_attention_mask'].to(device)
-
-        pos_input_ids = batch['positive_input_ids'].to(device)
-        pos_attention_mask = batch['positive_attention_mask'].to(device)
-
-        neg_input_ids = batch['negative_input_ids'].to(device)
-        neg_attention_mask = batch['negative_attention_mask'].to(device)
-
-        labels = batch['labels'].to(device)
-
-        # CrossEntropy Loss
-        _, labels = torch.max(labels, dim=1)
-
-        #"""TMP: triplet loss is calculated only when pos/neg gived."""
-        outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, labels=labels)
-        #outputs = model(anc_input_ids, anc_attention_mask, labels=labels)
-        loss = outputs[0]
-
-        """
-        # Compute Binary Cross Entropy
-        outputs = model(input_ids, attention_mask=attention_mask)
-        loss_fct = torch.nn.BCEWithLogitsLoss()
-        loss = loss_fct(outputs[0].view(-1, num_labels), labels.view(-1, num_labels))
-        """
-
-        """TMP: loss summation is need for dataparallel."""
-        #loss.backward()
-        
-        loss.sum().backward()
-        train_progress_bar.set_description("Current Loss: %f" % loss.sum())
-        optim.step()
-        scheduler.step()
-        steps += 1
-
-    model.eval()
-    cor_cnt = 0
-    total_size = 0
-    for batch in val_loader:
-        with torch.no_grad():
-            anc_input_ids = batch['anchor_input_ids'].to(device)
-            anc_attention_mask = batch['anchor_attention_mask'].to(device)
-            labels = batch['labels'].to(device)
-            outputs = model(anc_input_ids, anc_attention_mask)
-
-            logits = outputs[0]
-            cor_cnt += correct_count(logits, labels)
-            total_size += len(labels)
-
-    accuracy = cor_cnt * 1.0 / total_size
-    if accuracy > best_acc:
-        best_epoch = epoch
-        best_acc = accuracy
-    print(f"Accuracy: {accuracy}")
-    model.module.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
-
-#print(f"\nBest Model is epoch {best_epoch}. load and evaluate test...")
-#model = BertForSequenceClassification.from_pretrained(os.path.join(OUTPUT_PATH, f'epoch_{epoch}'))
-#model.to(device)
 
 # Test
 cor_cnt = 0
 total_size = 0
-for batch in test_loader:
+for batch in tqdm(test_loader):
     with torch.no_grad():
         anc_input_ids = batch['anchor_input_ids'].to(device)
         anc_attention_mask = batch['anchor_attention_mask'].to(device)
