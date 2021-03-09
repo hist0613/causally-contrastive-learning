@@ -8,7 +8,8 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
-from train_bert_imdb_pairwise_shellscript import BertForCounterfactualRobustness, IMDbDataset, CFIMDbDataset
+from classes.modeling import *
+from classes.datasets import *
 
 parser = argparse.ArgumentParser(description='Counterfactual Robustness Inferencing')
 parser.add_argument('--model-path', 
@@ -109,7 +110,7 @@ val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 model = BertForCounterfactualRobustness.from_pretrained(MODEL_PATH)
-model = torch.nn.DataParallel(model)
+#model = torch.nn.DataParallel(model)
 model.to(device)
 
 train_logits = []
@@ -123,10 +124,10 @@ for batch in tqdm(train_loader):
         outputs = model(anc_input_ids, anc_attention_mask, output_attentions=True)
 
         logits = outputs[0]
-        attentions = outputs[1]
-        train_logits.append(logits)
-        train_attentions.append(attentions)
-        train_input_ids.append(anc_input_ids)
+        attentions = outputs[1][-1]
+        train_logits.append(logits.detach().cpu())
+        train_attentions.append(attentions.detach().cpu())
+        train_input_ids.append(anc_input_ids.detach().cpu())
 
 val_logits = []
 val_attentions = []
@@ -139,10 +140,10 @@ for batch in val_loader:
         outputs = model(anc_input_ids, anc_attention_mask, output_attentions=True)
 
         logits = outputs[0]
-        attentions = outputs[1]
-        val_logits.append(logits)
-        val_attentions.append(attentions)
-        val_input_ids.append(anc_input_ids)
+        attentions = outputs[1][-1]
+        val_logits.append(logits.detach().cpu())
+        val_attentions.append(attentions.detach().cpu())
+        val_input_ids.append(anc_input_ids.detach().cpu())
 
 torch.save(torch.cat(train_logits, 0), os.path.join(REPS_PATH, "train_logits.pt"))
 torch.save(torch.cat(val_logits, 0), os.path.join(REPS_PATH, "val_logits.pt"))

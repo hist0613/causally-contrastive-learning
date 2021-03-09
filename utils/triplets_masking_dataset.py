@@ -10,7 +10,8 @@ random.seed(42)
 CF_EXAMPLES_PATH = "../dataset/cf_augmented_examples"
 DATASET_PATH = "../dataset/reform_aclImdb"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/triplet_5word_augmented_1x_aclImdb"
+OUTPUT_PATH = "../dataset/triplet_automated_gradient_1word_augmented_1x_aclImdb"
+#OUTPUT_PATH = "../dataset/triplet_2word_augmented_3x_aclImdb"
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
@@ -54,7 +55,8 @@ def reform(anchor_texts, positive_texts, negative_texts, labels):
     return output
 
 
-with open(os.path.join(CF_EXAMPLES_PATH, "triplets_sampling5_augmenting1_train.pickle"), 'rb') as fb:
+with open(os.path.join(CF_EXAMPLES_PATH, "triplets_automated_gradient_sampling1_augmenting1_train.pickle"), 'rb') as fb:
+#with open(os.path.join(CF_EXAMPLES_PATH, "triplets_sampling2_augmenting3_train.pickle"), 'rb') as fb:
     paired_train = pickle.load(fb)
 
 with open(os.path.join(CF_EXAMPLES_PATH, "triplets_dev.pickle"), 'rb') as fb:
