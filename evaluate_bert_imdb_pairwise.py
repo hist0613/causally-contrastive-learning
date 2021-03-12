@@ -11,18 +11,18 @@ DATASET_PATH = "dataset/aclImdb"
 #REFORMED_DATASET_PATH = "dataset/reform_aclImdb"
 #OUTPUT_PATH = "output"
 #REFORMED_DATASET_PATH = "dataset/cf_augmented_aclImdb"
-REFORMED_DATASET_PATH = "dataset/triplet_augmented_aclImdb"
+REFORMED_DATASET_PATH = "dataset/IMDb/triplet_posneg_1word_augmented_1x_aclImdb"
 #REFORMED_DATASET_PATH = "dataset/triplet_1word_augmented_aclImdb"
 
 #REFORMED_DATASET_PATH = "dataset/cf_not_augmented_aclImdb_full"
-OUTPUT_PATH = "checkpoints/triplet_1word_augmented_output_scheduling_warmup"
+OUTPUT_PATH = "checkpoints/IMDb/triplet_automated_attention_1word_augmented_1x_output_scheduling_warmup_lambda_01_2"
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
 TRAIN_SPLIT = "train"
 TEST_SPLIT = "test"
 BATCH_SIZE = 16
-EPOCH_NUM = 15
+EPOCH_NUM = 2
 num_labels = 2
 
 #Use triplet margin loss for CF robustness
@@ -158,13 +158,15 @@ def correct_count(logits, labels):
     return correct.item()
 
 # Load dataset
+"""
 with open(os.path.join(REFORMED_DATASET_PATH, "train.json")) as f:
     train = json.load(f) 
 with open(os.path.join(REFORMED_DATASET_PATH, "valid.json")) as f:
     val = json.load(f)
+"""
 with open(os.path.join(REFORMED_DATASET_PATH, "test.json")) as f:
     test = json.load(f)
-
+"""
 anc_train_texts = [d['anchor_text'] for d in train]
 pos_train_texts = [d['positive_text'] for d in train]
 neg_train_texts = [d['negative_text'] for d in train]
@@ -173,6 +175,7 @@ anc_val_texts = [d['anchor_text'] for d in val]
 pos_val_texts = [d['positive_text'] for d in val]
 neg_val_texts = [d['negative_text'] for d in val]
 val_labels = [d['label'] for d in val]
+"""
 anc_test_texts = [d['anchor_text'] for d in test]
 pos_test_texts = [d['positive_text'] for d in test]
 neg_test_texts = [d['negative_text'] for d in test]
@@ -182,36 +185,42 @@ test_labels = [d['label'] for d in test]
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 #Encode dataset
+"""
 anc_train_encodings = tokenizer(anc_train_texts, truncation=True, padding=True)
 anc_val_encodings = tokenizer(anc_val_texts, truncation=True, padding=True)
+"""
 anc_test_encodings = tokenizer(anc_test_texts, truncation=True, padding=True)
 
+"""
 pos_train_encodings = tokenizer(pos_train_texts, truncation=True, padding=True)
 pos_val_encodings = tokenizer(pos_val_texts, truncation=True, padding=True)
+"""
 pos_test_encodings = tokenizer(pos_test_texts, truncation=True, padding=True)
 
+"""
 neg_train_encodings = tokenizer(neg_train_texts, truncation=True, padding=True)
 neg_val_encodings = tokenizer(neg_val_texts, truncation=True, padding=True)
+"""
 neg_test_encodings = tokenizer(neg_test_texts, truncation=True, padding=True)
 
 
 
 #make dataset class
+"""
 train_dataset = CFIMDbDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_labels)
 val_dataset = CFIMDbDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_labels)
+"""
 test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
 
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
+#train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+#val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'epoch_14'))
+model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'epoch_2'))
 model = torch.nn.DataParallel(model)
 model.to(device)
 
-optim = AdamW(model.parameters(), lr=5e-5)
-scheduler = get_linear_schedule_with_warmup(optim, num_warmup_steps=50, num_training_steps=len(train_loader) * EPOCH_NUM)
 #Train & Evaluation
 best_epoch = -1
 best_acc = 0

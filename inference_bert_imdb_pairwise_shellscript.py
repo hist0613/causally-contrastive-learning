@@ -124,7 +124,7 @@ for batch in tqdm(train_loader):
         outputs = model(anc_input_ids, anc_attention_mask, output_attentions=True)
 
         logits = outputs[0]
-        attentions = outputs[1][-1]
+        attentions = outputs[1][-1][:,:,0,:]
         train_logits.append(logits.detach().cpu())
         train_attentions.append(attentions.detach().cpu())
         train_input_ids.append(anc_input_ids.detach().cpu())
@@ -145,10 +145,16 @@ for batch in val_loader:
         val_attentions.append(attentions.detach().cpu())
         val_input_ids.append(anc_input_ids.detach().cpu())
 
+train_attentions = torch.cat(train_attentions, 0)
+train_attention_scores = torch.sum(train_attentions, dim=1)
+
+val_attentions = torch.cat(val_attentions, 0)
+val_attention_scores = torch.sum(val_attentions, dim=1)
+
 torch.save(torch.cat(train_logits, 0), os.path.join(REPS_PATH, "train_logits.pt"))
 torch.save(torch.cat(val_logits, 0), os.path.join(REPS_PATH, "val_logits.pt"))
-torch.save(torch.cat(train_attentions, 0), os.path.join(REPS_PATH, "train_attentions.pt"))
-torch.save(torch.cat(val_attentions, 0), os.path.join(REPS_PATH, "val_attentions.pt"))
+torch.save(train_attention_scores, os.path.join(REPS_PATH, "train_attentions.pt"))
+torch.save(val_attention_scores, os.path.join(REPS_PATH, "val_attentions.pt"))
 torch.save(torch.cat(train_input_ids, 0), os.path.join(REPS_PATH, "train_input_ids.pt"))
 torch.save(torch.cat(val_input_ids, 0), os.path.join(REPS_PATH, "val_input_ids.pt"))
 

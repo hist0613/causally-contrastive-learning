@@ -6,11 +6,11 @@ import random
 random.seed(42)
 
 
-DATASET_PATH = "../dataset/aclImdb"
+DATASET_PATH = "../dataset/IMDb/aclImdb"
 TRAIN_SPLIT = "train"
 TEST_SPLIT = "test"
 #OUTPUT_PATH = "dataset/reform_aclImdb"
-OUTPUT_PATH = "../dataset/cf_not_augmented_aclImdb_full"
+OUTPUT_PATH = "../dataset/IMDb/original_augmented_1x_aclImdb_full"
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
@@ -47,7 +47,10 @@ def reform(texts, labels):
 
 train_texts, train_labels = read_imdb_split(os.path.join(DATASET_PATH, TRAIN_SPLIT))
 test_texts, test_labels = read_imdb_split(os.path.join(DATASET_PATH, TEST_SPLIT))
-train_texts, val_texts, train_labels, val_labels = train_test_split(train_texts, train_labels, test_size=.2, random_state=44)
+#train_texts, val_texts, train_labels, val_labels = train_test_split(train_texts, train_labels, test_size=.2, random_state=44)
+
+#Fake Validation Set
+val_texts, val_labels = [train_texts[0]], [train_labels[0]]
 
 train = reform(train_texts, train_labels)
 val = reform(val_texts, val_labels)

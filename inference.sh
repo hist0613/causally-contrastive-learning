@@ -1,7 +1,7 @@
 #!/bin/bash
 python inference_bert_imdb_pairwise_shellscript.py \
---model-path "checkpoints/not_augmented_output_scheduling_warmup/epoch_14" \
---dataset-path "dataset/triplet_5word_augmented_1x_aclImdb" \
+--model-path "checkpoints/IMDb/original_augmented_1x_output_scheduling_warmup_2/epoch_2" \
+--dataset-path "dataset/IMDb/original_augmented_1x_aclImdb_full" \
 --reps-path "reps" \
 --batch-size 2 \
 --epoch 15 \

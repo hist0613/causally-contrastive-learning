@@ -10,6 +10,7 @@ from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
 from classes.modeling import *
 from classes.datasets import *
+import pickle
 
 parser = argparse.ArgumentParser(description='Counterfactual Robustness Training')
 parser.add_argument('--dataset-path', 
@@ -64,50 +65,68 @@ def correct_count(logits, labels):
     correct = torch.sum(indices == label_indices)
     return correct.item()
 
-# Load dataset
-with open(os.path.join(REFORMED_DATASET_PATH, "train.json")) as f:
-    train = json.load(f) 
-with open(os.path.join(REFORMED_DATASET_PATH, "valid.json")) as f:
-    val = json.load(f)
-with open(os.path.join(REFORMED_DATASET_PATH, "test.json")) as f:
-    test = json.load(f)
+if os.path.exists(".encoding_cache"):
+#if False:
+    with open(".encoding_cache/train_dataset.pkl", 'rb') as fp:
+        train_dataset = pickle.load(fp)
+    with open(".encoding_cache/val_dataset.pkl", 'rb') as fp:
+        val_dataset = pickle.load(fp)
+    with open(".encoding_cache/test_dataset.pkl", 'rb') as fp:
+        test_dataset = pickle.load(fp)
+else:
+    # Load dataset
+    with open(os.path.join(REFORMED_DATASET_PATH, "train.json")) as f:
+        train = json.load(f) 
+    with open(os.path.join(REFORMED_DATASET_PATH, "valid.json")) as f:
+        val = json.load(f)
+    with open(os.path.join(REFORMED_DATASET_PATH, "test.json")) as f:
+        test = json.load(f)
 
-anc_train_texts = [d['anchor_text'] for d in train]
-pos_train_texts = [d['positive_text'] for d in train]
-neg_train_texts = [d['negative_text'] for d in train]
-train_labels = [d['label'] for d in train]
-anc_val_texts = [d['anchor_text'] for d in val]
-pos_val_texts = [d['positive_text'] for d in val]
-neg_val_texts = [d['negative_text'] for d in val]
-val_labels = [d['label'] for d in val]
-anc_test_texts = [d['anchor_text'] for d in test]
-pos_test_texts = [d['positive_text'] for d in test]
-neg_test_texts = [d['negative_text'] for d in test]
-test_labels = [d['label'] for d in test]
+    anc_train_texts = [d['anchor_text'] for d in train]
+    pos_train_texts = [d['positive_text'] for d in train]
+    neg_train_texts = [d['negative_text'] for d in train]
+    train_labels = [d['label'] for d in train]
+    anc_val_texts = [d['anchor_text'] for d in val]
+    pos_val_texts = [d['positive_text'] for d in val]
+    neg_val_texts = [d['negative_text'] for d in val]
+    val_labels = [d['label'] for d in val]
+    anc_test_texts = [d['anchor_text'] for d in test]
+    pos_test_texts = [d['positive_text'] for d in test]
+    neg_test_texts = [d['negative_text'] for d in test]
+    test_labels = [d['label'] for d in test]
 
-#Define tokenizer
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    #Define tokenizer
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-#Encode dataset
-anc_train_encodings = tokenizer(anc_train_texts, truncation=True, padding=True)
-anc_val_encodings = tokenizer(anc_val_texts, truncation=True, padding=True)
-anc_test_encodings = tokenizer(anc_test_texts, truncation=True, padding=True)
+    #Encode dataset
+    anc_train_encodings = tokenizer(anc_train_texts, truncation=True, padding=True)
+    anc_val_encodings = tokenizer(anc_val_texts, truncation=True, padding=True)
+    anc_test_encodings = tokenizer(anc_test_texts, truncation=True, padding=True)
 
-pos_train_encodings = tokenizer(pos_train_texts, truncation=True, padding=True)
-pos_val_encodings = tokenizer(pos_val_texts, truncation=True, padding=True)
-pos_test_encodings = tokenizer(pos_test_texts, truncation=True, padding=True)
+    pos_train_encodings = tokenizer(pos_train_texts, truncation=True, padding=True)
+    pos_val_encodings = tokenizer(pos_val_texts, truncation=True, padding=True)
+    pos_test_encodings = tokenizer(pos_test_texts, truncation=True, padding=True)
 
-neg_train_encodings = tokenizer(neg_train_texts, truncation=True, padding=True)
-neg_val_encodings = tokenizer(neg_val_texts, truncation=True, padding=True)
-neg_test_encodings = tokenizer(neg_test_texts, truncation=True, padding=True)
+    neg_train_encodings = tokenizer(neg_train_texts, truncation=True, padding=True)
+    neg_val_encodings = tokenizer(neg_val_texts, truncation=True, padding=True)
+    neg_test_encodings = tokenizer(neg_test_texts, truncation=True, padding=True)
 
 
 
-#make dataset class
-train_dataset = CFIMDbDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_labels)
-val_dataset = CFIMDbDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_labels)
-test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
+    #make dataset class
+    train_dataset = CFIMDbDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_labels)
+    val_dataset = CFIMDbDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_labels)
+    test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
 
+    os.mkdir(".encoding_cache")
+    with open(".encoding_cache/train_dataset.pkl", 'wb') as fp:
+        pickle.dump(train_dataset, fp)
+    with open(".encoding_cache/val_dataset.pkl", 'wb') as fp:
+        pickle.dump(val_dataset, fp)
+    with open(".encoding_cache/test_dataset.pkl", 'wb') as fp:
+        pickle.dump(test_dataset, fp)
+
+    
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
@@ -170,6 +189,7 @@ for epoch in range(EPOCH_NUM):
     model.eval()
     cor_cnt = 0
     total_size = 0
+    accuracy = 0
     for batch in val_loader:
         with torch.no_grad():
             anc_input_ids = batch['anchor_input_ids'].to(device)
@@ -181,7 +201,9 @@ for epoch in range(EPOCH_NUM):
             cor_cnt += correct_count(logits, labels)
             total_size += len(labels)
 
-    accuracy = cor_cnt * 1.0 / total_size
+    if total_size:
+        accuracy = cor_cnt * 1.0 / total_size
+
     if accuracy > best_acc:
         best_epoch = epoch
         best_acc = accuracy
