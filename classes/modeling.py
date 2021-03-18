@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
 
+
 #Use triplet margin loss for CF robustness
 class BertForCounterfactualRobustness(BertForSequenceClassification):
     def __init__(self, config):
@@ -95,13 +96,10 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
         if not return_dict:
             output = (logits,) + anchor_outputs[2:]
             return ((loss,) + output) if loss is not None else output
-        """
-        return SequenceClassifierOutput(
-            loss=loss,
-            logits=logits,
-            hidden_states=outputs.hidden_states,
-            attentions=outputs.attentions,
-        )
-        """
 
-
+        #return SequenceClassifierOutput(
+        #    loss=loss,
+        #    logits=logits,
+        #    hidden_states=outputs.hidden_states,
+        #    attentions=outputs.attentions,
+        #)

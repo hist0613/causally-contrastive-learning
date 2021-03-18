@@ -34,6 +34,10 @@ parser.add_argument('--epoch',
 parser.add_argument('--use-margin-loss',
                     action='store_true',
                     help="use margin loss for training")
+parser.add_argument('--use-encoding-cache',
+                    action='store_true',
+                    help="use encoding cache for training")
+
 args = parser.parse_args()
 
 
@@ -65,8 +69,11 @@ def correct_count(logits, labels):
     correct = torch.sum(indices == label_indices)
     return correct.item()
 
-if os.path.exists(".encoding_cache"):
-#if False:
+if args.use_encoding_cache:
+    print("Load Stored Cache...")
+    if not os.path.exists(".encoding_cache"):
+        raise ValueError("There is no encoding cache. please make cache before use tihs option.")
+
     with open(".encoding_cache/train_dataset.pkl", 'rb') as fp:
         train_dataset = pickle.load(fp)
     with open(".encoding_cache/val_dataset.pkl", 'rb') as fp:
@@ -74,6 +81,7 @@ if os.path.exists(".encoding_cache"):
     with open(".encoding_cache/test_dataset.pkl", 'rb') as fp:
         test_dataset = pickle.load(fp)
 else:
+    print("Encode dataset...")
     # Load dataset
     with open(os.path.join(REFORMED_DATASET_PATH, "train.json")) as f:
         train = json.load(f) 
@@ -118,14 +126,18 @@ else:
     val_dataset = CFIMDbDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_labels)
     test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
 
-    os.mkdir(".encoding_cache")
+    """
+    print("Save encoding cache...")
+    if not os.path.exists(".encoding_cache"):
+        os.mkdir(".encoding_cache")
+
     with open(".encoding_cache/train_dataset.pkl", 'wb') as fp:
         pickle.dump(train_dataset, fp)
     with open(".encoding_cache/val_dataset.pkl", 'wb') as fp:
         pickle.dump(val_dataset, fp)
     with open(".encoding_cache/test_dataset.pkl", 'wb') as fp:
         pickle.dump(test_dataset, fp)
-
+    """
     
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
@@ -142,7 +154,9 @@ scheduler = get_linear_schedule_with_warmup(optim, num_warmup_steps=50, num_trai
 best_epoch = -1
 best_acc = 0
 steps = 0
+all_loss = []
 for epoch in range(EPOCH_NUM):
+    epoch_loss = []
     model.train()
     train_progress_bar = tqdm(train_loader)
 
@@ -181,11 +195,13 @@ for epoch in range(EPOCH_NUM):
         #loss.backward()
         
         loss.sum().backward()
+        epoch_loss.append(loss.sum())
         train_progress_bar.set_description("Current Loss: %f" % loss.sum())
         optim.step()
         scheduler.step()
         steps += 1
 
+    all_loss.append(epoch_loss)
     model.eval()
     cor_cnt = 0
     total_size = 0
@@ -209,6 +225,9 @@ for epoch in range(EPOCH_NUM):
         best_acc = accuracy
     print(f"Accuracy: {accuracy}")
     model.module.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
+
+with open(os.path.join(OUTPUT_PATH, "training_loss.pkl"), 'wb') as f:
+    pickle.dump(all_loss, f)
 
 #print(f"\nBest Model is epoch {best_epoch}. load and evaluate test...")
 #model = BertForSequenceClassification.from_pretrained(os.path.join(OUTPUT_PATH, f'epoch_{epoch}'))

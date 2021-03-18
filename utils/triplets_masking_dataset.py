@@ -7,10 +7,10 @@ from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
 
-CF_EXAMPLES_PATH = "../dataset/IMDb/cf_augmented_examples"
-DATASET_PATH = "../dataset/IMDb/reform_aclImdb"
+CF_EXAMPLES_PATH = "../dataset/SST-2/cf_augmented_examples"
+DATASET_PATH = "../dataset/SST-2/original_augmented_1x_sst2"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/IMDb/triplet_automated_attention_1word_augmented_1x_aclImdb"
+OUTPUT_PATH = "../dataset/SST-2/triplet_automated_attention_1word_augmented_1x"
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
@@ -60,8 +60,22 @@ with open(os.path.join(CF_EXAMPLES_PATH, "triplets_automated_attention_sampling1
 
 train_data = reform(*return_triplet_text(paired_train))
 
+
+with open(os.path.join(DATASET_PATH, "valid.json"), 'r') as f:
+    valid_data = json.load(f)
+
+with open(os.path.join(DATASET_PATH, "test.json"), 'r') as f:
+    test_data = json.load(f)
+
+
 with open(os.path.join(OUTPUT_PATH, "train.json"), 'w') as f:
     json.dump(train_data, f)
+
+with open(os.path.join(OUTPUT_PATH, "valid.json"), 'w') as f:
+    json.dump(valid_data, f)
+
+with open(os.path.join(OUTPUT_PATH, "test.json"), 'w') as f:
+    json.dump(test_data, f)
 
 
 """
