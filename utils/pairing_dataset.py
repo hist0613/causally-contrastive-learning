@@ -7,10 +7,10 @@ from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
 
-CF_EXAMPLES_PATH = "../dataset/FineFood/cf_augmented_examples"
-DATASET_PATH = "../dataset/FineFood/original_augmented_1x_finefood"
+CF_EXAMPLES_PATH = "../dataset/SST-2/cf_augmented_examples"
+DATASET_PATH = "../dataset/SST-2/original_augmented_1x_sst2"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/FineFood/triplet_posneg_1word_augmented_1x_finefood"
+OUTPUT_PATH = "../dataset/SST-2/triplet_posneg_1word_augmented_1x_sst2"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)

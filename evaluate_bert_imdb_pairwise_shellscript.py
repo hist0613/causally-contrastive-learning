@@ -2,27 +2,50 @@ import json
 import os
 import sys
 import torch
+import argparse
 from torch.utils.data import DataLoader
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
-DATASET_PATH = "dataset/aclImdb"
-#REFORMED_DATASET_PATH = "dataset/reform_aclImdb"
-#OUTPUT_PATH = "output"
-#REFORMED_DATASET_PATH = "dataset/cf_augmented_aclImdb"
-REFORMED_DATASET_PATH = "dataset/FineFood/triplet_posneg_1word_augmented_1x_finefood"
-#REFORMED_DATASET_PATH = "dataset/triplet_1word_augmented_aclImdb"
 
-#REFORMED_DATASET_PATH = "dataset/cf_not_augmented_aclImdb_full"
-OUTPUT_PATH = "checkpoints/SST-2/triplet_automated_gradient_1word_augmented_1x_output_scheduling_warmup_lambda_01_try2_1"
+parser = argparse.ArgumentParser(description='Counterfactual Robustness Training')
+parser.add_argument('--dataset-path', 
+                    type=str,
+                    required=True,
+                    help='path for dataset')
+parser.add_argument('--checkpoint-path', 
+                    type=str, 
+                    required=True,
+                    help='path for output')
+parser.add_argument('--batch-size', 
+                    type=int,
+                    required=True,
+                    default=16,
+                    help="batch size for train/valid/test")
+parser.add_argument('--epoch',
+                    type=int,
+                    required=True,
+                    default=3,
+                    help="epoch number for training")
+args = parser.parse_args()
+
+
+
+#REFORMED_DATASET_PATH = "dataset/FineFood/triplet_posneg_1word_augmented_1x_finefood"
+#OUTPUT_PATH = "checkpoints/SST-2/triplet_automated_gradient_1word_augmented_1x_output_scheduling_warmup_lambda_01_try2_1"
+
+REFORMED_DATASET_PATH = args.dataset_path 
+OUTPUT_PATH = args.checkpoint_path 
+
+
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
 TRAIN_SPLIT = "train"
 TEST_SPLIT = "test"
-BATCH_SIZE = 16
-EPOCH_NUM = 2
+BATCH_SIZE = args.batch_size
+EPOCH_NUM = args.epoch - 1
 num_labels = 2
 
 #Use triplet margin loss for CF robustness
