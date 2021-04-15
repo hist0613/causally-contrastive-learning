@@ -40,8 +40,7 @@ OUTPUT_PATH = args.checkpoint_path
 
 
 if not os.path.exists(OUTPUT_PATH):
-    os.makedirs(OUTPUT_PATH)
-
+    raise ValueError("Output not found")
 TRAIN_SPLIT = "train"
 TEST_SPLIT = "test"
 BATCH_SIZE = args.batch_size

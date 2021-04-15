@@ -145,6 +145,7 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 model = BertForCounterfactualRobustness.from_pretrained('bert-base-uncased')
+#model = BertForCounterfactualRobustnessWithMasker.from_pretrained('bert-base-uncased')
 model = torch.nn.DataParallel(model)
 model.to(device)
 
@@ -174,9 +175,17 @@ for epoch in range(EPOCH_NUM):
 
         labels = batch['labels'].to(device)
 
+        """
+        ###### MASKER LOSS #####
+        uniform_labels = torch.ones(labels.size()).float().to(device)
+        uniform_labels = uniform_labels / num_labels
+        ssl_labels = anc_input_ids - pos_input_ids
+        ssl_labels = ssl_labels + (ssl_labels != 0) * (tokenizer.mask_token_id + 1) - 1
+        ssl_labels = ssl_labels.long().to(device)
+        ##### MASKER LOSS ENDED #####
+        """
         # CrossEntropy Loss
         _, labels = torch.max(labels, dim=1)
-
         #"""TMP: triplet loss is calculated only when pos/neg gived."""
         if args.use_margin_loss:
             outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, labels=labels)

@@ -6,11 +6,15 @@ import json
 from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
+DATASET_NAME = "IMDb"
+SMALL_NAME = "aclImdb"
 
-CF_EXAMPLES_PATH = "../dataset/SST-2/cf_augmented_examples"
-DATASET_PATH = "../dataset/SST-2/original_augmented_1x_sst2"
+CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
+DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/SST-2/triplet_automated_attention_1word_augmented_1x"
+FILE_NAME = "triplets_automated_averaged_gradient_propensity_sampling1_augmenting1_train.pickle"
+
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
@@ -20,18 +24,26 @@ def return_triplet_text(data):
     samelabel_texts = []
     difflabel_texts = []
     labels = []
+    flipped_cnt = 0
+
 
     for d in data:
-        anchor_text = d[1]        
-        samelabel_text = d[3]
-        difflabel_text = d[2]
+        anchor_text = d[1]
+        if not d[4]:    
+            samelabel_text = d[3]
+            difflabel_text = d[2]
+            flipped_cnt += 1
+        else:
+            samelabel_text = d[1]
+            difflabel_text = d[1]
+
         label = 0 if d[0] == 'Negative' else 1
            
         anchor_texts.append(anchor_text)
         samelabel_texts.append(samelabel_text)
         difflabel_texts.append(difflabel_text)
         labels.append(label)
-
+    print(flipped_cnt / len(data))
     return anchor_texts, samelabel_texts, difflabel_texts, labels
 
 def reform(anchor_texts, positive_texts, negative_texts, labels):
@@ -54,7 +66,7 @@ def reform(anchor_texts, positive_texts, negative_texts, labels):
     return output
 
 
-with open(os.path.join(CF_EXAMPLES_PATH, "triplets_automated_attention_sampling1_augmenting1_train.pickle"), 'rb') as fb:
+with open(os.path.join(CF_EXAMPLES_PATH, FILE_NAME), 'rb') as fb:
 #with open(os.path.join(CF_EXAMPLES_PATH, "triplets_sampling2_augmenting3_train.pickle"), 'rb') as fb:
     paired_train = pickle.load(fb)
 
