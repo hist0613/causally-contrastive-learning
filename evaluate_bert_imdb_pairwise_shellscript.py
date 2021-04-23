@@ -46,6 +46,7 @@ TEST_SPLIT = "test"
 BATCH_SIZE = args.batch_size
 EPOCH_NUM = args.epoch - 1
 num_labels = 2
+SUBSET_SPLIT = 4
 
 #Use triplet margin loss for CF robustness
 class BertForCounterfactualRobustness(BertForSequenceClassification):
@@ -202,9 +203,16 @@ anc_test_texts = [d['anchor_text'] for d in test]
 pos_test_texts = [d['positive_text'] for d in test]
 neg_test_texts = [d['negative_text'] for d in test]
 test_labels = [d['label'] for d in test]
+zipped = zip(anc_test_texts, test_labels)
+anc_test_texts, test_labels = list(zip(*sorted(zipped, key=lambda x: len(x[0]))))
 
 #Define tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+for i in range(len(anc_test_texts)):
+    if i != 0 and not (i+1) % int(len(anc_test_texts) / SUBSET_SPLIT):
+        print(i, len(tokenizer.tokenize(anc_test_texts[i])))
+
 
 #Encode dataset
 """
@@ -251,7 +259,15 @@ steps = 0
 # Test
 cor_cnt = 0
 total_size = 0
-for batch in tqdm(test_loader):
+sub_cor_cnt = 0
+sub_total_size = 0
+for i, batch in enumerate(test_loader):
+    if i!=0 and not (i+1) % int(len(test_loader) / SUBSET_SPLIT):
+        subset_accuracy = sub_cor_cnt * 1.0 / sub_total_size
+        print(f"Subset Test Accuracy: {subset_accuracy}")
+        sub_cor_cnt = 0
+        sub_total_size = 0
+
     with torch.no_grad():
         anc_input_ids = batch['anchor_input_ids'].to(device)
         anc_attention_mask = batch['anchor_attention_mask'].to(device)
@@ -261,6 +277,9 @@ for batch in tqdm(test_loader):
         logits = outputs[0]
         cor_cnt += correct_count(logits, labels)
         total_size += len(labels)
+        sub_cor_cnt += correct_count(logits, labels)
+        sub_total_size += len(labels)
+
 
 accuracy = cor_cnt * 1.0 / total_size
 print(f"Test Accuracy: {accuracy}")

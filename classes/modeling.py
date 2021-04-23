@@ -23,6 +23,7 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
         positive_attention_mask=None,
         negative_input_ids=None,
         negative_attention_mask=None,
+        triplet_sample_masks=None,
         token_type_ids=None,
         position_ids=None,
         head_mask=None,
@@ -90,8 +91,13 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
             )
             triplet_loss = None
             triplet_loss_fct = torch.nn.TripletMarginLoss()
-            triplet_loss = triplet_loss_fct(anchor_outputs[1], positive_outputs[1], negative_outputs[1])
-            loss = loss + 0.1 * triplet_loss
+            if triplet_sample_masks is None:
+                triplet_loss = triplet_loss_fct(anchor_outputs[1], positive_outputs[1], negative_outputs[1])
+                loss = loss + 0.1 * triplet_loss
+            else:
+                if torch.sum(triplet_sample_masks):
+                    triplet_loss = triplet_loss_fct(anchor_outputs[1][triplet_sample_masks], positive_outputs[1][triplet_sample_masks], negative_outputs[1][triplet_sample_masks])
+                    loss = loss + 0.1 * triplet_loss
 
         if not return_dict:
             output = (logits,) + anchor_outputs[2:]

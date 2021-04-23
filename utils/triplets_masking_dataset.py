@@ -6,14 +6,14 @@ import json
 from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
-DATASET_NAME = "IMDb"
-SMALL_NAME = "aclImdb"
+DATASET_NAME = "SST-2"
+SMALL_NAME = "sst2"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
 DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_TVD_MINFLIPPED_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
-FILE_NAME = "triplets_automated_averaged_gradient_propensity_sampling1_augmenting1_train.pickle"
+FILE_NAME = "triplets_automated_averaged_gradient_propensity_TVD_MINFLIPPED_sampling1_augmenting1_train.pickle"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
@@ -23,6 +23,7 @@ def return_triplet_text(data):
     anchor_texts = []
     samelabel_texts = []
     difflabel_texts = []
+    triplet_sample_masks = []
     labels = []
     flipped_cnt = 0
 
@@ -37,25 +38,33 @@ def return_triplet_text(data):
             samelabel_text = d[1]
             difflabel_text = d[1]
 
+        triplet_sample_mask = d[4]
+
         label = 0 if d[0] == 'Negative' else 1
            
         anchor_texts.append(anchor_text)
         samelabel_texts.append(samelabel_text)
         difflabel_texts.append(difflabel_text)
+        triplet_sample_masks.append(triplet_sample_mask)
         labels.append(label)
     print(flipped_cnt / len(data))
-    return anchor_texts, samelabel_texts, difflabel_texts, labels
+    return anchor_texts, samelabel_texts, difflabel_texts, triplet_sample_masks, labels
 
-def reform(anchor_texts, positive_texts, negative_texts, labels):
+def reform(anchor_texts, positive_texts, negative_texts, triplet_sample_masks, labels):
     output = []
-    for i, (anc_text, pos_text, neg_text, label) in enumerate(zip(anchor_texts, positive_texts, negative_texts, labels)):
+    for i, (anc_text, pos_text, neg_text, tri_mask, label) in enumerate(zip(anchor_texts, positive_texts, negative_texts, triplet_sample_masks, labels)):
         sample = dict()
         sample['id'] = i
         sample['anchor_text'] = anc_text
         sample['positive_text'] = pos_text
         sample['negative_text'] = neg_text
         #sample['label'] = label 
-        
+       
+        if tri_mask:
+            sample['triplet_sample_mask'] = False
+        else:
+            sample['triplet_sample_mask'] = True
+
         if label == 0:
             sample['label'] = [1., 0.]
         else:
@@ -67,7 +76,6 @@ def reform(anchor_texts, positive_texts, negative_texts, labels):
 
 
 with open(os.path.join(CF_EXAMPLES_PATH, FILE_NAME), 'rb') as fb:
-#with open(os.path.join(CF_EXAMPLES_PATH, "triplets_sampling2_augmenting3_train.pickle"), 'rb') as fb:
     paired_train = pickle.load(fb)
 
 train_data = reform(*return_triplet_text(paired_train))

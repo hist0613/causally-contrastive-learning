@@ -93,6 +93,7 @@ else:
     anc_train_texts = [d['anchor_text'] for d in train]
     pos_train_texts = [d['positive_text'] for d in train]
     neg_train_texts = [d['negative_text'] for d in train]
+    train_triplet_sample_masks = [d['triplet_sample_mask'] for d in train]
     train_labels = [d['label'] for d in train]
     anc_val_texts = [d['anchor_text'] for d in val]
     pos_val_texts = [d['positive_text'] for d in val]
@@ -122,7 +123,7 @@ else:
 
 
     #make dataset class
-    train_dataset = CFIMDbDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_labels)
+    train_dataset = CFClassifcationDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_triplet_sample_masks, train_labels)
     val_dataset = CFIMDbDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_labels)
     test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
 
@@ -173,6 +174,8 @@ for epoch in range(EPOCH_NUM):
         neg_input_ids = batch['negative_input_ids'].to(device)
         neg_attention_mask = batch['negative_attention_mask'].to(device)
 
+        triplet_sample_masks = batch['triplet_sample_masks'].to(device)
+
         labels = batch['labels'].to(device)
 
         """
@@ -188,7 +191,8 @@ for epoch in range(EPOCH_NUM):
         _, labels = torch.max(labels, dim=1)
         #"""TMP: triplet loss is calculated only when pos/neg gived."""
         if args.use_margin_loss:
-            outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, labels=labels)
+            #outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, labels=labels)
+            outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, triplet_sample_masks=triplet_sample_masks, labels=labels)
         else:
             outputs = model(anc_input_ids, anc_attention_mask, labels=labels)
         loss = outputs[0]
