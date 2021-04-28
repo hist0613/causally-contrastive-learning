@@ -11,9 +11,9 @@ SMALL_NAME = "sst2"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
 DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_TVD_MINFLIPPED_1word_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_TVD_uniform_notSorted_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
-FILE_NAME = "triplets_automated_averaged_gradient_propensity_TVD_MINFLIPPED_sampling1_augmenting1_train.pickle"
+FILE_NAME = "triplets_automated_averaged_gradient_propensity_TVD_uniform_notSorted_sampling1_augmenting1_train.pickle"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)

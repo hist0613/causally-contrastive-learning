@@ -2,11 +2,11 @@
 for i in "0" "1" "2"
 do
 python train_bert_imdb_pairwise_shellscript.py \
---dataset-path "dataset/SST-2/triplet_automated_averaged_gradient_propensity_TVD_MINFLIPPED_1word_augmented_1x_sst2" \
---output-path "checkpoints/SST-2/triplet_automated_averaged_gradient_propensity_TVD_MINFLIPPED_1word_augmented_1x_output_scheduling_warmup_lambda_01_clean_try2_${i}" \
+--dataset-path "dataset/SST-2/triplet_automated_averaged_gradient_propensity_TVD_uniform_notSorted_1word_augmented_1x_sst2" \
+--output-path "checkpoints/SST-2/triplet_automated_averaged_gradient_propensity_TVD_uniform_notSorted_1word_augmented_1x_output_scheduling_warmup_lambda_01_clean_${i}" \
 --batch-size 16 \
 --epoch 3 \
---use-margin-loss
+#--use-margin-loss
 done
 
 #echo "Model Running Completed. run expensive model..."
