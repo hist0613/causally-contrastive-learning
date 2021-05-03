@@ -1,13 +1,16 @@
 #!/bin/bash
 for i in "0" "1" "2"
 do
-CUDA_VISIBLE_DEVICES=0,1 python train_bert_imdb_pairwise_shellscript.py \
---dataset-path "dataset/SST-2/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_partition_02_sst2/" \
---output-path "checkpoints/SST-2/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_partition_02_output_scheduling_warmup_lambda_01_${i}" \
---batch-size 16 \
---epoch 15 \
+python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/IMDb/triplet_automated_averaged_gradient_propensity_flip_1word_augmented_1x_aclImdb/" \
+--output-path "checkpoints/IMDb/triplet_automated_averaged_gradient_propensity_flip_1word_augmented_1x_output_scheduling_warmup_lambda_01_bs8_${i}" \
+--batch-size 8 \
+--epoch 3 \
 --use-margin-loss
 done
+
+#--dataset-path "dataset/SST-2/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_partition_02_sst2/" \
+#--output-path "checkpoints/SST-2/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_partition_02_output_scheduling_warmup_lambda_01_${i}" \
 
 #echo "Model Running Completed. run expensive model..."
 #cd ../ResponseSelection

@@ -6,13 +6,13 @@ import json
 from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
-DATASET_NAME = "SST-2"
-SMALL_NAME = "sst2"
-PARTITION_SIZE_DICT = {"02": 0.2, "04": 0.4, "06": 0.6, "08": 0.8}
-PARTITION_SIZE = "02" # Dot is skipped
+DATASET_NAME = "FineFood_full"
+SMALL_NAME = "finefood"
+PARTITION_SIZE_DICT = {"025": 0.2, "050": 0.5, "075": 0.75}
+PARTITION_SIZE = "075" # Dot is skipped
 
-DATASET_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_1word_augmented_1x_partition_{PARTITION_SIZE}_{SMALL_NAME}"
+DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_partition_{PARTITION_SIZE}_{SMALL_NAME}"
 PARTITION_PATH = "../partition_indices"
 
 if not os.path.exists(OUTPUT_PATH):

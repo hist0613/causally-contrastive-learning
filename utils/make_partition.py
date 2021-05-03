@@ -8,13 +8,13 @@ import random
 import numpy as np
 
 random.seed(42)
-DATASET_NAME = "SST-2"
-SMALL_NAME = "sst2"
+DATASET_NAME = "FineFood_full"
+SMALL_NAME = "finefood"
 
 
 DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
 PARTITION_PATH = "../partition_indices"
-PARTITION_SIZE_DICT = {"02": 0.2, "04": 0.4, "06": 0.6, "08": 0.8}
+PARTITION_SIZE_DICT = {"025": 0.25, "050": 0.5, "075": 0.75}
 
 if not os.path.exists(PARTITION_PATH):
     os.makedirs(PARTITION_PATH)
