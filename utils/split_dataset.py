@@ -7,7 +7,7 @@ import random
 from tqdm import tqdm
 random.seed(42)
 
-DATASET_NAME = "IMDb"
+DATASET_NAME = "FineFood_full"
 DATASET_PATH = f"../dataset/{DATASET_NAME}"
 
 SPLIT_PATH = f"{DATASET_NAME}_train_split.pickle"
@@ -18,9 +18,12 @@ for folder in tqdm(os.listdir(DATASET_PATH)):
     if "triplet" not in folder:
         continue
 
-
-    with open(os.path.join(DATASET_PATH, folder, "train.json")) as f:
-        data = json.load(f)
+    try:
+        with open(os.path.join(DATASET_PATH, folder, "train.json")) as f:
+            data = json.load(f)
+    except:
+        print(folder)
+        continue
     
     if not split_indices:
         split_indices = list(range(len(data)))
@@ -30,14 +33,16 @@ for folder in tqdm(os.listdir(DATASET_PATH)):
     
     train_indices = split_indices[:int(len(data) * SPLIT_SIZE)]
     val_indices = split_indices[int(len(data) * SPLIT_SIZE):]
-
-    train = []
-    for ti in train_indices:
-        train.append(data[ti])
-    val = []
-    for vi in val_indices:
-        val.append(data[vi])
-
+    try:
+        train = []
+        for ti in train_indices:
+            train.append(data[ti])
+        val = []
+        for vi in val_indices:
+            val.append(data[vi])
+    except:
+        print(folder)
+        continue
 
     with open(os.path.join(DATASET_PATH, folder, "train.json"), 'w') as f:
         json.dump(train, f)
