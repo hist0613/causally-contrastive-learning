@@ -242,9 +242,11 @@ for epoch in range(EPOCH_NUM):
 with open(os.path.join(OUTPUT_PATH, "training_loss.pkl"), 'wb') as f:
     pickle.dump(all_loss, f)
 
-#print(f"\nBest Model is epoch {best_epoch}. load and evaluate test...")
-#model = BertForSequenceClassification.from_pretrained(os.path.join(OUTPUT_PATH, f'epoch_{epoch}'))
-#model.to(device)
+print(f"\nBest Model is epoch {best_epoch}. load and evaluate test...")
+os.rename(os.path.join(OUTPUT_PATH, f"epoch_{best_epoch}"), os.path.join(OUTPUT_PATH, "best_epoch"))
+model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, "best_epoch"))
+model.to(device)
+model.eval()
 
 # Test
 cor_cnt = 0
