@@ -247,7 +247,7 @@ test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_en
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'epoch_2'))
+model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_epoch'))
 model = torch.nn.DataParallel(model)
 model.to(device)
 

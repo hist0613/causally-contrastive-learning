@@ -105,10 +105,6 @@ else:
     neg_test_texts = [d['negative_text'] for d in test]
     test_labels = [d['label'] for d in test]
 
-
-    print(anc_train_texts[:10])
-    print(anc_val_texts[:10])
-
     #Define tokenizer
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
@@ -129,7 +125,7 @@ else:
 
     #make dataset class
     train_dataset = CFClassifcationDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_triplet_sample_masks, train_labels)
-    val_dataset = CFClassificationDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_triplet_sample_masks, val_labels)
+    val_dataset = CFClassifcationDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_triplet_sample_masks, val_labels)
     test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
 
     """

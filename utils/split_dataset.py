@@ -7,7 +7,7 @@ import random
 from tqdm import tqdm
 random.seed(42)
 
-DATASET_NAME = "IMDb"
+DATASET_NAME = "SST-2"
 DATASET_PATH = f"../dataset/{DATASET_NAME}"
 
 SPLIT_PATH = f"{DATASET_NAME}_train_split.pickle"
