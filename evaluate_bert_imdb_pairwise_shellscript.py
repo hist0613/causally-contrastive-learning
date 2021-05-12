@@ -214,33 +214,20 @@ for i in range(len(anc_test_texts)):
         print(i, len(tokenizer.tokenize(anc_test_texts[i])))
 
 
-#Encode dataset
-"""
-anc_train_encodings = tokenizer(anc_train_texts, truncation=True, padding=True)
-anc_val_encodings = tokenizer(anc_val_texts, truncation=True, padding=True)
-"""
-anc_test_encodings = tokenizer(anc_test_texts, truncation=True, padding=True)
+if os.path.exists(os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth")):
+    print("Load pre-processed dataset...")
+    test_dataset = torch.load(os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth"))
 
-"""
-pos_train_encodings = tokenizer(pos_train_texts, truncation=True, padding=True)
-pos_val_encodings = tokenizer(pos_val_texts, truncation=True, padding=True)
-"""
-pos_test_encodings = tokenizer(pos_test_texts, truncation=True, padding=True)
+else:
+    print("Encode dataset...")
+    #Encode dataset
+    anc_test_encodings = tokenizer(anc_test_texts, truncation=True, padding=True)
+    pos_test_encodings = tokenizer(pos_test_texts, truncation=True, padding=True)
+    neg_test_encodings = tokenizer(neg_test_texts, truncation=True, padding=True)
 
-"""
-neg_train_encodings = tokenizer(neg_train_texts, truncation=True, padding=True)
-neg_val_encodings = tokenizer(neg_val_texts, truncation=True, padding=True)
-"""
-neg_test_encodings = tokenizer(neg_test_texts, truncation=True, padding=True)
-
-
-
-#make dataset class
-"""
-train_dataset = CFIMDbDataset(anc_train_encodings, pos_train_encodings, neg_train_encodings, train_labels)
-val_dataset = CFIMDbDataset(anc_val_encodings, pos_val_encodings, neg_val_encodings, val_labels)
-"""
-test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
+    #make dataset class
+    test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
+    torch.save(test_dataset, os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth"))
 
 #train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 #val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)

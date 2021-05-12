@@ -93,12 +93,19 @@ else:
     anc_train_texts = [d['anchor_text'] for d in train]
     pos_train_texts = [d['positive_text'] for d in train]
     neg_train_texts = [d['negative_text'] for d in train]
-    train_triplet_sample_masks = [d['triplet_sample_mask'] for d in train]
+    if 'triplet_sample_mask' in train[0].keys():
+        train_triplet_sample_masks = [d['triplet_sample_mask'] for d in train]
+    else:
+        train_triplet_sample_masks = [True for d in train]
     train_labels = [d['label'] for d in train]
     anc_val_texts = [d['anchor_text'] for d in val]
     pos_val_texts = [d['positive_text'] for d in val]
     neg_val_texts = [d['negative_text'] for d in val]
-    val_triplet_sample_masks = [d['triplet_sample_mask'] for d in val]
+    
+    if 'triplet_sample_mask' in val[0].keys():
+        val_triplet_sample_masks = [d['triplet_sample_mask'] for d in val]
+    else:
+        val_triplet_sample_masks = [True for d in val]
     val_labels = [d['label'] for d in val]
     anc_test_texts = [d['anchor_text'] for d in test]
     pos_test_texts = [d['positive_text'] for d in test]
