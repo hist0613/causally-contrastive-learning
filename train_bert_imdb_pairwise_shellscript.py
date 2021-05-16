@@ -34,6 +34,10 @@ parser.add_argument('--epoch',
 parser.add_argument('--use-margin-loss',
                     action='store_true',
                     help="use margin loss for training")
+parser.add_argument('--lambda-weight',
+                    type=float,
+                    default=0.1,
+                    help="lambda weight for margin loss")
 parser.add_argument('--use-encoding-cache',
                     action='store_true',
                     help="use encoding cache for training")
@@ -200,7 +204,7 @@ for epoch in range(EPOCH_NUM):
         #"""TMP: triplet loss is calculated only when pos/neg gived."""
         if args.use_margin_loss:
             #outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, labels=labels)
-            outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, triplet_sample_masks=triplet_sample_masks, labels=labels)
+            outputs = model(anc_input_ids, anc_attention_mask, pos_input_ids, pos_attention_mask, neg_input_ids, neg_attention_mask, triplet_sample_masks=triplet_sample_masks, lambda_weight=args.lambda_weight, labels=labels)
         else:
             outputs = model(anc_input_ids, anc_attention_mask, labels=labels)
         loss = outputs[0]
