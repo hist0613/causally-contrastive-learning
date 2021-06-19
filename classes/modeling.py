@@ -25,7 +25,9 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
         negative_attention_mask=None,
         triplet_sample_masks=None,
         lambda_weight=None,
-        token_type_ids=None,
+        anchor_token_type_ids=None,
+        positive_token_type_ids=None,
+        negative_token_type_ids=None,
         position_ids=None,
         head_mask=None,
         inputs_embeds=None,
@@ -40,7 +42,7 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
         anchor_outputs = self.bert(
             anchor_input_ids,
             attention_mask=anchor_attention_mask,
-            token_type_ids=token_type_ids,
+            token_type_ids=anchor_token_type_ids,
             position_ids=position_ids,
             head_mask=head_mask,
             inputs_embeds=inputs_embeds,
@@ -71,7 +73,7 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
             positive_outputs = self.bert(
                 positive_input_ids,
                 attention_mask=positive_attention_mask,
-                token_type_ids=token_type_ids,
+                token_type_ids=positive_token_type_ids,
                 position_ids=position_ids,
                 head_mask=head_mask,
                 inputs_embeds=inputs_embeds,
@@ -82,7 +84,7 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
             negative_outputs = self.bert(
                 negative_input_ids,
                 attention_mask=negative_attention_mask,
-                token_type_ids=token_type_ids,
+                token_type_ids=negative_token_type_ids,
                 position_ids=position_ids,
                 head_mask=head_mask,
                 inputs_embeds=inputs_embeds,
@@ -90,6 +92,31 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
                 output_hidden_states=output_hidden_states,
                 return_dict=return_dict,
             )
+
+            ### TMP_MEMORY TEST ###
+            positive_outputs_1 = self.bert(
+                positive_input_ids,
+                attention_mask=positive_attention_mask,
+                token_type_ids=positive_token_type_ids,
+                position_ids=position_ids,
+                head_mask=head_mask,
+                inputs_embeds=inputs_embeds,
+                output_attentions=output_attentions,
+                output_hidden_states=output_hidden_states,
+                return_dict=return_dict,
+            )
+            negative_outputs_1 = self.bert(
+                negative_input_ids,
+                attention_mask=negative_attention_mask,
+                token_type_ids=negative_token_type_ids,
+                position_ids=position_ids,
+                head_mask=head_mask,
+                inputs_embeds=inputs_embeds,
+                output_attentions=output_attentions,
+                output_hidden_states=output_hidden_states,
+                return_dict=return_dict,
+            )
+            #######################
             triplet_loss = None
             triplet_loss_fct = torch.nn.TripletMarginLoss()
 

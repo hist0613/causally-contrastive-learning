@@ -52,7 +52,15 @@ if not os.path.exists(REPS_PATH):
 
 TRAIN_SPLIT = "train"
 TEST_SPLIT = "test"
-num_labels = 2
+#num_labels = 2
+num_labels = 3
+
+def split_sentences(text):
+    sp = text.split(" [SEP] ")
+    if len(sp) > 1:
+        return sp
+    else:
+        return sp[0]
 
 def correct_count(logits, labels):
     _, indices = torch.max(logits, dim=1)
@@ -68,13 +76,13 @@ with open(os.path.join(REFORMED_DATASET_PATH, "valid.json")) as f:
 #with open(os.path.join(REFORMED_DATASET_PATH, "test.json")) as f:
 #    test = json.load(f)
 
-anc_train_texts = [d['anchor_text'] for d in train]
-pos_train_texts = [d['positive_text'] for d in train]
-neg_train_texts = [d['negative_text'] for d in train]
+anc_train_texts = [split_sentences(d['anchor_text']) for d in train]
+pos_train_texts = [split_sentences(d['positive_text']) for d in train]
+neg_train_texts = [split_sentences(d['negative_text']) for d in train]
 train_labels = [d['label'] for d in train]
-anc_val_texts = [d['anchor_text'] for d in val]
-pos_val_texts = [d['positive_text'] for d in val]
-neg_val_texts = [d['negative_text'] for d in val]
+anc_val_texts = [split_sentences(d['anchor_text']) for d in val]
+pos_val_texts = [split_sentences(d['positive_text']) for d in val]
+neg_val_texts = [split_sentences(d['negative_text']) for d in val]
 val_labels = [d['label'] for d in val]
 #anc_test_texts = [d['anchor_text'] for d in test]
 #pos_test_texts = [d['positive_text'] for d in test]
@@ -120,8 +128,9 @@ for batch in tqdm(train_loader):
     with torch.no_grad():
         anc_input_ids = batch['anchor_input_ids'].to(device)
         anc_attention_mask = batch['anchor_attention_mask'].to(device)
+        anc_token_type_ids = batch['anchor_token_type_ids'].to(device)
         labels = batch['labels'].to(device)
-        outputs = model(anc_input_ids, anc_attention_mask, output_attentions=True)
+        outputs = model(anc_input_ids, anc_attention_mask, anchor_token_type_ids=anc_token_type_ids, output_attentions=True)
 
         logits = outputs[0]
         attentions = outputs[1][-1][:,:,0,:]
@@ -136,8 +145,9 @@ for batch in val_loader:
     with torch.no_grad():
         anc_input_ids = batch['anchor_input_ids'].to(device)
         anc_attention_mask = batch['anchor_attention_mask'].to(device)
+        anc_token_type_ids = batch['anchor_token_type_ids'].to(device)
         labels = batch['labels'].to(device)
-        outputs = model(anc_input_ids, anc_attention_mask, output_attentions=True)
+        outputs = model(anc_input_ids, anc_attention_mask, anchor_token_type_ids=anc_token_type_ids, output_attentions=True)
 
         logits = outputs[0]
         attentions = outputs[1][-1]

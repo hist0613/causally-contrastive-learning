@@ -8,6 +8,7 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
+from classes.modeling import *
 
 parser = argparse.ArgumentParser(description='Counterfactual Robustness Training')
 parser.add_argument('--dataset-path', 
@@ -30,10 +31,13 @@ parser.add_argument('--epoch',
                     help="epoch number for training")
 args = parser.parse_args()
 
+def split_sentences(text):
+    sp = text.split(" [SEP] ")
+    if len(sp) > 1:
+        return sp
+    else:
+        return sp[0]
 
-
-#REFORMED_DATASET_PATH = "dataset/FineFood/triplet_posneg_1word_augmented_1x_finefood"
-#OUTPUT_PATH = "checkpoints/SST-2/triplet_automated_gradient_1word_augmented_1x_output_scheduling_warmup_lambda_01_try2_1"
 
 REFORMED_DATASET_PATH = args.dataset_path 
 OUTPUT_PATH = args.checkpoint_path 
@@ -48,6 +52,7 @@ EPOCH_NUM = args.epoch - 1
 num_labels = 2
 SUBSET_SPLIT = 4
 
+"""
 #Use triplet margin loss for CF robustness
 class BertForCounterfactualRobustness(BertForSequenceClassification):
     def __init__(self, config):
@@ -134,14 +139,7 @@ class BertForCounterfactualRobustness(BertForSequenceClassification):
         if not return_dict:
             output = (logits,) + anchor_outputs[2:]
             return ((loss,) + output) if loss is not None else output
-        """
-        return SequenceClassifierOutput(
-            loss=loss,
-            logits=logits,
-            hidden_states=outputs.hidden_states,
-            attentions=outputs.attentions,
-        )
-        """
+"""
 
 class IMDbDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
@@ -181,28 +179,18 @@ def correct_count(logits, labels):
     return correct.item()
 
 # Load dataset
-"""
-with open(os.path.join(REFORMED_DATASET_PATH, "train.json")) as f:
-    train = json.load(f) 
-with open(os.path.join(REFORMED_DATASET_PATH, "valid.json")) as f:
-    val = json.load(f)
-"""
 with open(os.path.join(REFORMED_DATASET_PATH, "test.json")) as f:
     test = json.load(f)
-"""
-anc_train_texts = [d['anchor_text'] for d in train]
-pos_train_texts = [d['positive_text'] for d in train]
-neg_train_texts = [d['negative_text'] for d in train]
-train_labels = [d['label'] for d in train]
-anc_val_texts = [d['anchor_text'] for d in val]
-pos_val_texts = [d['positive_text'] for d in val]
-neg_val_texts = [d['negative_text'] for d in val]
-val_labels = [d['label'] for d in val]
-"""
-anc_test_texts = [d['anchor_text'] for d in test]
-pos_test_texts = [d['positive_text'] for d in test]
-neg_test_texts = [d['negative_text'] for d in test]
+
+anc_test_texts = [split_sentences(d['anchor_text']) for d in test]
+pos_test_texts = [split_sentences(d['positive_text']) for d in test]
+neg_test_texts = [split_sentences(d['negative_text']) for d in test]
 test_labels = [d['label'] for d in test]
+
+### Automatically setting num_labels ###
+NUM_LABELS = len(test_labels[0])
+print(f"NUM_LABELS: {NUM_LABELS}")
+
 zipped = zip(anc_test_texts, test_labels)
 anc_test_texts, test_labels = list(zip(*sorted(zipped, key=lambda x: len(x[0]))))
 
@@ -211,8 +199,7 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 for i in range(len(anc_test_texts)):
     if i != 0 and not (i+1) % int(len(anc_test_texts) / SUBSET_SPLIT):
-        print(i, len(tokenizer.tokenize(anc_test_texts[i])))
-
+        print(i, len(tokenizer(anc_test_texts[i])['input_ids']))
 
 if os.path.exists(os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth")):
     print("Load pre-processed dataset...")
@@ -234,7 +221,7 @@ else:
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_epoch'))
+model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_epoch'), num_labels=NUM_LABELS)
 model = torch.nn.DataParallel(model)
 model.to(device)
 
@@ -258,8 +245,12 @@ for i, batch in enumerate(test_loader):
     with torch.no_grad():
         anc_input_ids = batch['anchor_input_ids'].to(device)
         anc_attention_mask = batch['anchor_attention_mask'].to(device)
+        anc_token_type_ids = batch['anchor_token_type_ids'].to(device)
         labels = batch['labels'].to(device)
-        outputs = model(anc_input_ids, anc_attention_mask)
+        outputs = model(
+                anc_input_ids, 
+                anc_attention_mask,
+                anchor_token_type_ids=anc_token_type_ids)
 
         logits = outputs[0]
         cor_cnt += correct_count(logits, labels)
