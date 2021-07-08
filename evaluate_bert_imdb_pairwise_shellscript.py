@@ -221,7 +221,8 @@ else:
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_epoch'), num_labels=NUM_LABELS)
+#model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_epoch'), num_labels=NUM_LABELS)
+model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_step'), num_labels=NUM_LABELS)
 model = torch.nn.DataParallel(model)
 model.to(device)
 

@@ -18,7 +18,7 @@ for folder in os.listdir(DATASET_PATH):
     data = None
     train = []
     val = []
-    if "triplet" not in folder:
+    if "original" not in folder:
         continue
 
     try:

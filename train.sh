@@ -221,14 +221,45 @@ CUDA_VISIBLE_DEVICES=4,5 python evaluate_bert_imdb_pairwise_shellscript.py \
 --epoch 3 
 done
 
-END
 
-MODEL_NAME="IMDb_newtraining_test"
-echo "Test New Training"
+MODEL_NAME="ssmba_softed_augmented_5x_output_scheduling_warmup_lambda_01"
+echo "ssmba_training"
 for i in "0" "1" "2"
 do
-CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
---dataset-path "dataset/IMDb/triplet_automated_averaged_gradient_propensity_TVD_uniform_1word_augmented_1x_aclImdb/" \
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript_stepsave.py \
+--dataset-path "dataset/FineFood_full/ssmba_softed_augmented_5x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 
+#--use-margin-loss \
+#--lambda-weight 0.3
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+
+MODEL_NAME="ssmba_softed_augmented_5x_output_scheduling_warmup_lambda_01"
+echo "ssmba_training"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript_stepsave.py \
+--dataset-path "dataset/IMDb/ssmba_softed_augmented_5x_aclImdb/" \
 --output-path "checkpoints/IMDb/${MODEL_NAME}_${i}" \
 --batch-size 8 \
 --epoch 3 
@@ -244,12 +275,45 @@ CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
 --batch-size 6 \
 --epoch 3 
 done
-echo "SST-2"
+echo "SST2"
 for i in "0" "1" "2"
 do
 CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
 --dataset-path  $SST2_TESTSET \
 --checkpoint-path "checkpoints/IMDb/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+END
+
+MODEL_NAME="ssmba_softed_augmented_5x_output_scheduling_warmup_lambda_01_ver1"
+echo "ssmba_training"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript_stepsave.py \
+--dataset-path "dataset/SST-2/ssmba_softed_augmented_5x_sst2.bak/" \
+--output-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
+--batch-size 16 \
+--epoch 3 
+#--use-margin-loss \
+#--lambda-weight 0.3
+done
+echo "FineFood"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $FINEFOOD_TESTSET \
+--checkpoint-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
 --batch-size 6 \
 --epoch 3 
 done
