@@ -3,7 +3,7 @@ FINEFOOD_TESTSET="dataset/FineFood_full/triplet_posneg_1word_augmented_1x_finefo
 IMDB_TESTSET="dataset/IMDb/triplet_posneg_1word_augmented_1x_aclImdb"
 SST2_TESTSET="dataset/SST-2/triplet_posneg_1word_augmented_1x_sst2"
 
-MODEL_PATH="checkpoints/SST-2/ssmba_softed_augmented_5x_output_scheduling_warmup_lambda_01"
+MODEL_PATH="checkpoints/SST-2/original_augmented_1x_output_scheduling_warmup_lambda_01_try3"
 echo "FineFood"
 for i in "0" "1" "2"
 do

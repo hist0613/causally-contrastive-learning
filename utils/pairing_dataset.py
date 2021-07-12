@@ -7,10 +7,10 @@ from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
 
-CF_EXAMPLES_PATH = "../dataset/FineFood_full/cf_augmented_examples"
-DATASET_PATH = "../dataset/FineFood_full/original_augmented_1x_sst2"
+CF_EXAMPLES_PATH = "../dataset/CFIMDb/cf_augmented_examples"
+DATASET_PATH = "../dataset/CFIMDb/original_augmented_1x_aclImdb"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/FineFood_full/triplet_posneg_1word_augmented_1x_sst2"
+OUTPUT_PATH = "../dataset/CFIMDb/triplet_posneg_1word_augmented_1x_aclImdb"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
@@ -74,7 +74,7 @@ def reform(anchor_texts, positive_texts, negative_texts, labels):
     return output
 
 
-with open(os.path.join(CF_EXAMPLES_PATH, "triplets_automated_averaged_attention_sampling1_augmenting1_train.pickle"), 'rb') as fb:
+with open(os.path.join(CF_EXAMPLES_PATH, "triplets_automated_averaged_gradient_sampling1_augmenting1_train.pickle"), 'rb') as fb:
 #with open(os.path.join(CF_EXAMPLES_PATH, "triplets_sampling2_augmenting3_train.pickle"), 'rb') as fb:
     paired_train = pickle.load(fb)
 

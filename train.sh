@@ -291,7 +291,7 @@ MODEL_NAME="ssmba_softed_augmented_5x_output_scheduling_warmup_lambda_01_ver1"
 echo "ssmba_training"
 for i in "0" "1" "2"
 do
-CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript_stepsave.py \
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
 --dataset-path "dataset/SST-2/ssmba_softed_augmented_5x_sst2.bak/" \
 --output-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
 --batch-size 16 \
