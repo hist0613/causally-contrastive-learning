@@ -3,9 +3,11 @@ import random
 from transformers import BertTokenizer
 import os
 
-DATASET_PATH = "../dataset/SST-2/triplet_automated_averaged_gradient_LM_dropout_05_flip_1word_augmented_1x_sst2"
-OUTPUT_PATH = "../dataset/SST-2/triplet_automated_averaged_gradient_LM_dropout_05_flip_multi_2_same_neg_1word_augmented_1x_sst2"
-#os.makedirs(OUTPUT_PATH)
+DATASET_PATH = "../dataset/FineFood_full/triplet_automated_averaged_gradient_LM_dropout_05_flip_1word_augmented_1x_finefood"
+OUTPUT_PATH = "../dataset/FineFood_full/triplet_automated_averaged_gradient_LM_dropout_05_flip_multi_2_same_neg_1word_augmented_1x_finefood"
+if not os.path.exists(OUTPUT_PATH):
+    os.makedirs(OUTPUT_PATH)
+
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
 with open(os.path.join(DATASET_PATH, "train.json")) as f:
@@ -37,5 +39,19 @@ for d in train_data:
 
 with open(os.path.join(OUTPUT_PATH, "train.json"), 'w') as f:
     json.dump(train_data, f)
+
+
+
+with open(os.path.join(DATASET_PATH, "valid.json"), 'r') as f:
+    valid_data = json.load(f)
+
+with open(os.path.join(DATASET_PATH, "test.json"), 'r') as f:
+    test_data = json.load(f)
+
+with open(os.path.join(OUTPUT_PATH, "valid.json"), 'w') as f:
+    json.dump(valid_data, f)
+
+with open(os.path.join(OUTPUT_PATH, "test.json"), 'w') as f:
+    json.dump(test_data, f)
 
 

@@ -7,7 +7,7 @@ import random
 from tqdm import tqdm
 random.seed(42)
 
-DATASET_NAME = "SST-2"
+DATASET_NAME = "FineFood_full"
 DATASET_PATH = f"../dataset/{DATASET_NAME}"
 
 SPLIT_PATH = f"{DATASET_NAME}_train_split.pickle"
@@ -18,7 +18,7 @@ for folder in os.listdir(DATASET_PATH):
     data = None
     train = []
     val = []
-    if "original" not in folder:
+    if "original_augmented_1x_finefood" not in folder:
         continue
 
     try:

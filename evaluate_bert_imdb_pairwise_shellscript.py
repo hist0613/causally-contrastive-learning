@@ -191,15 +191,16 @@ test_labels = [d['label'] for d in test]
 NUM_LABELS = len(test_labels[0])
 print(f"NUM_LABELS: {NUM_LABELS}")
 
-zipped = zip(anc_test_texts, test_labels)
-anc_test_texts, test_labels = list(zip(*sorted(zipped, key=lambda x: len(x[0]))))
-
 #Define tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
+zipped = zip(anc_test_texts, test_labels)
+anc_test_texts, test_labels = list(zip(*sorted(zipped, key=lambda x: len(x[0]))))
+#anc_test_texts, test_labels = list(zip(*sorted(zipped, key=lambda x: len(tokenizer(x[0])['input_ids']))))
+
 for i in range(len(anc_test_texts)):
     if i != 0 and not (i+1) % int(len(anc_test_texts) / SUBSET_SPLIT):
-        print(i, len(tokenizer(anc_test_texts[i])['input_ids']))
+        print(i, len(anc_test_texts[i]), len(tokenizer(anc_test_texts[i])['input_ids']))
 
 if os.path.exists(os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth")):
     print("Load pre-processed dataset...")

@@ -7,14 +7,50 @@ from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
 
-CF_EXAMPLES_PATH = "../dataset/CFIMDb/cf_augmented_examples"
-DATASET_PATH = "../dataset/CFIMDb/original_augmented_1x_aclImdb"
+#CF_EXAMPLES_PATH = "../dataset/IMDb/cf_augmented_examples"
+DATASET_PATH = "../dataset/IMDb/triplet_automated_averaged_gradient_LM_dropout_05_flip_1word_augmented_1x_shortest_025_aclImdb/"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/CFIMDb/triplet_posneg_1word_augmented_1x_aclImdb"
+OUTPUT_PATH = "../dataset/IMDb/triplet_posneg_1word_augmented_1x_shortest_025_aclImdb/"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
+def return_triplet_text(data):
+    negative_pool = []
+    positive_pool = []
+
+    for d in data:
+        if d['label'] == [1., 0.]:
+            negative_pool.append(d['anchor_text'])
+        else:
+            positive_pool.append(d['anchor_text'])
+
+    print(len(negative_pool))
+    print(len(positive_pool))
+    anchor_texts = []
+    samelabel_texts = []
+    difflabel_texts = []
+    labels = []
+
+    for d in data:
+        anchor_text = d['anchor_text']
+        label = 0 if d['label'] == [1., 0.]  else 1
+        
+        if label == 0:
+            samelabel_text = random.choice(negative_pool)
+            difflabel_text = random.choice(positive_pool)
+        else:
+            samelabel_text = random.choice(positive_pool)
+            difflabel_text = random.choice(negative_pool)
+            
+        anchor_texts.append(anchor_text)
+        samelabel_texts.append(samelabel_text)
+        difflabel_texts.append(difflabel_text)
+        labels.append(label)
+
+    return anchor_texts, samelabel_texts, difflabel_texts, labels
+
+"""
 def return_triplet_text(data):
 
     negative_pool = []
@@ -50,7 +86,7 @@ def return_triplet_text(data):
         labels.append(label)
 
     return anchor_texts, samelabel_texts, difflabel_texts, labels
-
+"""
 def reform(anchor_texts, positive_texts, negative_texts, labels):
     output = []
     for i, (anc_text, pos_text, neg_text, label) in enumerate(zip(anchor_texts, positive_texts, negative_texts, labels)):
@@ -73,12 +109,14 @@ def reform(anchor_texts, positive_texts, negative_texts, labels):
 
     return output
 
-
+"""
 with open(os.path.join(CF_EXAMPLES_PATH, "triplets_automated_averaged_gradient_sampling1_augmenting1_train.pickle"), 'rb') as fb:
-#with open(os.path.join(CF_EXAMPLES_PATH, "triplets_sampling2_augmenting3_train.pickle"), 'rb') as fb:
     paired_train = pickle.load(fb)
+"""
+with open(os.path.join(DATASET_PATH, "train.json")) as f:
+    orig_train = json.load(f)
 
-train_data = reform(*return_triplet_text(paired_train))
+train_data = reform(*return_triplet_text(orig_train))
 
 with open(os.path.join(OUTPUT_PATH, "train.json"), 'w') as f:
     json.dump(train_data, f)

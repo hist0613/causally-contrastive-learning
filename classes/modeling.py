@@ -10,7 +10,6 @@ from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
 
-
 #TMP: For Multi pair Setting
 #Use triplet margin loss for CF robustness
 class BertForMultiCounterfactualRobustness(BertForSequenceClassification):

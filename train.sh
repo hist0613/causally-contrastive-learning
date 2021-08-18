@@ -285,37 +285,640 @@ CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
 --epoch 3 
 done
 
-END
-
-MODEL_NAME="ssmba_softed_augmented_5x_output_scheduling_warmup_lambda_01_ver1"
-echo "ssmba_training"
+#########FineFood SentTokenize Multi training###########
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_output_scheduling_warmup_lambda_01"
+echo "SentTokenize Training, lambda 01"
 for i in "0" "1" "2"
 do
 CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
---dataset-path "dataset/SST-2/ssmba_softed_augmented_5x_sst2.bak/" \
---output-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
---batch-size 16 \
---epoch 3 
-#--use-margin-loss \
-#--lambda-weight 0.3
-done
-echo "FineFood"
-for i in "0" "1" "2"
-do
-CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
---dataset-path  $FINEFOOD_TESTSET \
---checkpoint-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
---batch-size 6 \
---epoch 3 
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.1
 done
 echo "IMDb"
 for i in "0" "1" "2"
 do
 CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
 --dataset-path  $IMDB_TESTSET \
---checkpoint-path "checkpoints/SST-2/${MODEL_NAME}_${i}" \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
 --batch-size 6 \
 --epoch 3 
 done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_output_scheduling_warmup_lambda_03"
+echo "SentTokenize Training, lambda 03"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.3
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_output_scheduling_warmup_lambda_05"
+echo "SentTokenize Training, lambda 05"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.5
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_output_scheduling_warmup_lambda_07"
+echo "SentTokenize Training, lambda 07"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.7
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_output_scheduling_warmup_lambda_1"
+echo "SentTokenize Training, lambda 1"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_2_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 1.0
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+echo "=============================================================="
+echo "===================limit 3 started!!!========================="
+echo "=============================================================="
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_output_scheduling_warmup_lambda_01"
+echo "SentTokenize Training, lambda 01"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.1
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_output_scheduling_warmup_lambda_03"
+echo "SentTokenize Training, lambda 03"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.3
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_output_scheduling_warmup_lambda_05"
+echo "SentTokenize Training, lambda 05"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.5
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_output_scheduling_warmup_lambda_07"
+echo "SentTokenize Training, lambda 07"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.7
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_output_scheduling_warmup_lambda_1"
+echo "SentTokenize Training, lambda 1"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_3_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 1.0
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+END
+
+echo "=============================================================="
+echo "===================limit 4 started!!!========================="
+echo "=============================================================="
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_output_scheduling_warmup_lambda_01"
+echo "SentTokenize Training, lambda 01"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.1
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_output_scheduling_warmup_lambda_03"
+echo "SentTokenize Training, lambda 03"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.3
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_output_scheduling_warmup_lambda_05"
+echo "SentTokenize Training, lambda 05"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.5
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_output_scheduling_warmup_lambda_07"
+echo "SentTokenize Training, lambda 07"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.7
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_output_scheduling_warmup_lambda_1"
+echo "SentTokenize Training, lambda 1"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 1.0
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+echo "=============================================================="
+echo "===================limit 5 started!!!========================="
+echo "=============================================================="
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_output_scheduling_warmup_lambda_01"
+echo "SentTokenize Training, lambda 01"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.1
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_output_scheduling_warmup_lambda_03"
+echo "SentTokenize Training, lambda 03"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.3
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_output_scheduling_warmup_lambda_05"
+echo "SentTokenize Training, lambda 05"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.5
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_output_scheduling_warmup_lambda_07"
+echo "SentTokenize Training, lambda 07"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 0.7
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+
+MODEL_NAME="triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_output_scheduling_warmup_lambda_1"
+echo "SentTokenize Training, lambda 1"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python train_bert_imdb_pairwise_shellscript.py \
+--dataset-path "dataset/FineFood_full/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_5_1word_augmented_1x_finefood/" \
+--output-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 8 \
+--epoch 3 \
+--use-margin-loss \
+--lambda-weight 1.0
+done
+echo "IMDb"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $IMDB_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+echo "SST-2"
+for i in "0" "1" "2"
+do
+CUDA_VISIBLE_DEVICES=0,1,2 python evaluate_bert_imdb_pairwise_shellscript.py \
+--dataset-path  $SST2_TESTSET \
+--checkpoint-path "checkpoints/FineFood_full/${MODEL_NAME}_${i}" \
+--batch-size 6 \
+--epoch 3 
+done
+END
+
 
 

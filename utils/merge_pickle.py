@@ -1,8 +1,8 @@
 import pickle
 import os
-DATASET_NAME = "FineFood_full"
+DATASET_NAME = "IMDb"
 PICKLE_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
-PICKLE_NAME = "triplets_automated_averaged_gradient_propensity_flip_sampling1_augmenting1_train"
+PICKLE_NAME = "triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_sampling1_augmenting1_train"
 
 with open(os.path.join(PICKLE_PATH, f"{PICKLE_NAME}_cuda0.pickle"), 'rb') as f:
     data0 = pickle.load(f)

@@ -5,12 +5,14 @@ from pathlib import Path
 import json
 from sklearn.model_selection import train_test_split
 import random
+import copy
+
 random.seed(42)
-DATASET_NAME = "FineFood_full"
-SMALL_NAME = "finefood"
+DATASET_NAME = "IMDb"
+SMALL_NAME = "aclImdb"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
-DATASET_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_TVD_uniform_1word_augmented_1x_{SMALL_NAME}"
+DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_sentTokenize_{SMALL_NAME}"
 OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
 FILE_NAME = "triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_sampling1_augmenting1_train.pickle"
@@ -74,12 +76,25 @@ def reform(anchor_texts, positive_texts, negative_texts, triplet_sample_masks, l
 
     return output
 
+def aggregate(orig_data, train_data):
+    output = []
+    assert len(orig_data) == len(train_data)
+    for od, td in zip(orig_data, train_data):
+        sample = copy.deepcopy(td)
+        sample['id'] = od['id']
+        output.append(sample)
+    return output
+
 
 with open(os.path.join(CF_EXAMPLES_PATH, FILE_NAME), 'rb') as fb:
     paired_train = pickle.load(fb)
 
 train_data = reform(*return_triplet_text(paired_train))
 
+with open(os.path.join(DATASET_PATH, "train.json"), 'r') as f:
+    orig_train_data = json.load(f)
+
+train_data = aggregate(orig_train_data, train_data)
 
 with open(os.path.join(DATASET_PATH, "valid.json"), 'r') as f:
     valid_data = json.load(f)
