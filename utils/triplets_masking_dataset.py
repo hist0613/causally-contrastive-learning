@@ -6,14 +6,14 @@ import json
 from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
-DATASET_NAME = "FineFood_full"
-SMALL_NAME = "finefood"
+DATASET_NAME = "CFIMDb"
+SMALL_NAME = "aclImdb"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
-DATASET_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_propensity_TVD_uniform_1word_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_1word_augmented_1x_{SMALL_NAME}"
+DATASET_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_1word_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_attention_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
-FILE_NAME = "triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_sampling1_augmenting1_train.pickle"
+FILE_NAME = "triplets_automated_averaged_attention_sampling1_augmenting1_train.pickle"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)

@@ -6,8 +6,8 @@ import json
 from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
-DATASET_NAME = "MultiNLI_telephone"
-SMALL_NAME = "mnli"
+DATASET_NAME = "CFNLI"
+SMALL_NAME = "cfnli"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
 DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"

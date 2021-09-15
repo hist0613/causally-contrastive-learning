@@ -10,13 +10,13 @@ from nltk.tokenize import sent_tokenize
 import copy
 
 random.seed(42)
-DATASET_NAME = "FineFood_full"
-SMALL_NAME = "finefood"
+DATASET_NAME = "IMDb"
+SMALL_NAME = "aclImdb"
 
+NUM_MASK = 1
 DATASET_PATH = f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_1word_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH =  f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_4_1word_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH =  f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_sentTokenize_aggregated_limit_{NUM_MASK}_1word_augmented_1x_{SMALL_NAME}"
 
-NUM_MASK = 4
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)

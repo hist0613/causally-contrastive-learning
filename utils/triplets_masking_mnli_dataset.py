@@ -6,12 +6,12 @@ import json
 from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
-DATASET_NAME = "MultiNLI_telephone"
-SMALL_NAME = "mnli"
+DATASET_NAME = "CFNLI"
+SMALL_NAME = "cfnli"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
 DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_flip_sep_noneutral_ver2_1word_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplets_automated_averaged_gradient_LM_dropout_05_flip_sep_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
 FILE_NAME = "triplets_automated_averaged_gradient_LM_dropout_05_flip_sep_sampling1_augmenting1_train.pickle"
 

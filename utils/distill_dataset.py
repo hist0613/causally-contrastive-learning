@@ -6,9 +6,9 @@ from sklearn.model_selection import train_test_split
 import random
 random.seed(42)
 
-DATASET_PATH = "../dataset/SST-2/ssmba_augmented_5x_sst2"
+DATASET_PATH = "../dataset/MultiNLI_telephone/ssmba_augmented_5x_mnli"
 REPS_PATH = "../reps"
-OUTPUT_PATH = "../dataset/SST-2/ssmba_softed_augmented_5x_sst2"
+OUTPUT_PATH = "../dataset/MultiNLI_telephone/ssmba_softed_augmented_5x_mnli"
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
 
