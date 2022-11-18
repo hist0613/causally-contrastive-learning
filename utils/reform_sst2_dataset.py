@@ -56,10 +56,10 @@ def reform(texts, labels):
 
 train_texts, train_labels = read_sst2_split(os.path.join(DATASET_PATH, TRAIN_SPLIT))
 test_texts, test_labels = read_sst2_split(os.path.join(DATASET_PATH, TEST_SPLIT))
-#train_texts, val_texts, train_labels, val_labels = train_test_split(train_texts, train_labels, test_size=.3, random_state=44)
+train_texts, val_texts, train_labels, val_labels = train_test_split(train_texts, train_labels, test_size=.1, random_state=44)
 
 #Fake Validation Set
-val_texts, val_labels = [train_texts[0]], [train_labels[0]]
+#val_texts, val_labels = [train_texts[0]], [train_labels[0]]
 
 train = reform(train_texts, train_labels)
 val = reform(val_texts, val_labels)
