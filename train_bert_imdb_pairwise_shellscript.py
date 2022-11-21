@@ -43,7 +43,7 @@ parser.add_argument('--use-encoding-cache',
                     help="use encoding cache for training")
 
 args = parser.parse_args()
-
+print(args)
 
 REFORMED_DATASET_PATH = args.dataset_path
 OUTPUT_PATH = args.output_path
@@ -161,7 +161,7 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 model = BertForCounterfactualRobustness.from_pretrained('bert-base-uncased', num_labels=NUM_LABELS)
-model = torch.nn.DataParallel(model)
+#model = torch.nn.DataParallel(model)
 model.to(device)
 
 optim = AdamW(model.parameters(), lr=5e-5)
@@ -284,7 +284,8 @@ for epoch in range(EPOCH_NUM):
         best_epoch = epoch
         best_acc = accuracy
     print(f"Accuracy: {accuracy}")
-    model.module.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
+    #model.module.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
+    model.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
 
 with open(os.path.join(OUTPUT_PATH, "training_loss.pkl"), 'wb') as f:
     pickle.dump(all_loss, f)
