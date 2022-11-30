@@ -4,8 +4,7 @@ Official pytorch implementation of C2L: Causally Contrastive Learning for Robust
 ## Setup
 In this repository, we only treat CFIMDb dataset as an example. This also works on another datasets which are mentioned in our paper.
 ### Download Dataset
-You can download dataset from the repository of [Learning the Difference that Makes a Difference with Counterfactually-Augmented Data]
-(https://github.com/acmi-lab/counterfactually-augmented-data).
+You can download dataset from the repository of [Learning the Difference that Makes a Difference with Counterfactually-Augmented Data](https://github.com/acmi-lab/counterfactually-augmented-data).
 However, we already pre-process the data for our training code. you can just clone this repository and run the shell script below!
 Also, there also exists the dataset augmented with our approach. You can train with this dataset directly.
 
@@ -25,3 +24,5 @@ cd ..
 ```
 bash train_cfimdb_ours_public.sh
 ```
+
+[주소에 대한 설명](http://www.google.co.kr).
