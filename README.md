@@ -1,5 +1,5 @@
 # C2L: Causally Contrastive Learning for Robust Text Classification
-Official pytorch implementation of [C2L: Causally Contrastive Learning for Robust Text Classification](https://ojs.aaai.org/index.php/AAAI/article/download/21296/version/19583/21045) (AAAI 2022) by Seungtaek Choi*, Myeongho Jeong*, Hojae Han, Seung-won Hwang.
+Official pytorch implementation of [**C2L: Causally Contrastive Learning for Robust Text Classification**](https://ojs.aaai.org/index.php/AAAI/article/download/21296/version/19583/21045) (AAAI 2022) by *Seungtaek Choi*, Myeongho Jeong*, Hojae Han, Seung-won Hwang*.
 
 ## Setup
 In this repository, we only treat CFIMDb dataset as an example. This also works on another datasets which are mentioned in our paper.
