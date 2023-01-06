@@ -201,7 +201,7 @@ anc_test_texts, test_labels = list(zip(*sorted(zipped, key=lambda x: len(x[0])))
 for i in range(len(anc_test_texts)):
     if i != 0 and not (i+1) % int(len(anc_test_texts) / SUBSET_SPLIT):
         print(i, len(anc_test_texts[i]), len(tokenizer(anc_test_texts[i])['input_ids']))
-
+"""
 if os.path.exists(os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth")):
     print("Load pre-processed dataset...")
     test_dataset = torch.load(os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth"))
@@ -216,6 +216,15 @@ else:
     #make dataset class
     test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
     torch.save(test_dataset, os.path.join(REFORMED_DATASET_PATH, "preprocessed_test.pth"))
+"""
+print("Encode dataset...")
+#Encode dataset
+anc_test_encodings = tokenizer(anc_test_texts, truncation=True, padding=True)
+pos_test_encodings = tokenizer(pos_test_texts, truncation=True, padding=True)
+neg_test_encodings = tokenizer(neg_test_texts, truncation=True, padding=True)
+
+#make dataset class
+test_dataset = CFIMDbDataset(anc_test_encodings, pos_test_encodings, neg_test_encodings, test_labels)
 
 #train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 #val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
@@ -224,7 +233,7 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_epoch'), num_labels=NUM_LABELS)
 #model = BertForCounterfactualRobustness.from_pretrained(os.path.join(OUTPUT_PATH, 'best_step'), num_labels=NUM_LABELS)
-model = torch.nn.DataParallel(model)
+#model = torch.nn.DataParallel(model)
 model.to(device)
 
 #Train & Evaluation

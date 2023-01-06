@@ -43,7 +43,7 @@ parser.add_argument('--use-encoding-cache',
                     help="use encoding cache for training")
 
 args = parser.parse_args()
-
+print(args)
 
 REFORMED_DATASET_PATH = args.dataset_path
 OUTPUT_PATH = args.output_path
@@ -285,6 +285,7 @@ for epoch in range(EPOCH_NUM):
         best_acc = accuracy
     print(f"Accuracy: {accuracy}")
     model.module.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
+    #model.save_pretrained(os.path.join(OUTPUT_PATH, f"epoch_{epoch}"))
 
 with open(os.path.join(OUTPUT_PATH, "training_loss.pkl"), 'wb') as f:
     pickle.dump(all_loss, f)

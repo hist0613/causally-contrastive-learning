@@ -10,10 +10,10 @@ DATASET_NAME = "CFIMDb"
 SMALL_NAME = "aclImdb"
 
 CF_EXAMPLES_PATH = f"../dataset/{DATASET_NAME}/cf_augmented_examples"
-DATASET_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_1word_augmented_1x_{SMALL_NAME}"
-OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_attention_1word_augmented_1x_{SMALL_NAME}"
+DATASET_PATH = f"../dataset/{DATASET_NAME}/original_augmented_1x_{SMALL_NAME}"
+OUTPUT_PATH = f"../dataset/{DATASET_NAME}/triplet_automated_averaged_gradient_1word_augmented_1x_{SMALL_NAME}"
 REPS_PATH = "../reps"
-FILE_NAME = "triplets_automated_averaged_attention_sampling1_augmenting1_train.pickle"
+FILE_NAME = "triplets_automated_averaged_gradient_sampling1_augmenting1_train.pickle"
 
 if not os.path.exists(OUTPUT_PATH):
     os.makedirs(OUTPUT_PATH)
