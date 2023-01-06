@@ -26,7 +26,7 @@ Also, there also exists the dataset augmented with our approach. You can train w
 bash train_cfimdb_public.sh
 ```
 ### Generate counterfactually masked samples
-To generate counterfactually masked samples, we provide a notebook [pairing-data-ours-public.ipynb](https://github.com/hist0613/counterfactual-robustness/blob/public_clean_code/pairing-data-ours-public.ipynb). Please run all shells sequentially. After that, please run the code below to reform the output to trainable dataset.
+To generate counterfactually masked samples, we provide a notebook [pairing-data-ours-public.ipynb](https://github.com/hist0613/counterfactual-robustness/blob/main/pairing-data-ours-public.ipynb). Please run all shells sequentially. After that, please run the code below to reform the output to trainable dataset.
 ```
 cd utils
 python triplets_masking_dataset.py
